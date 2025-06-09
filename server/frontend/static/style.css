@@ -42,7 +42,7 @@ img{
 }
 
 .homepage_links{
-  color:  rgb(97, 64, 128);
+  color:  rgb(178, 178, 179);
   padding: 25%;
   font-size: larger;
   }
@@ -87,7 +87,6 @@ img{
 .nav_item{
   margin-left:15px;
   font-size: 20px;
-  color: black;
   align-self: center;
 }
 
@@ -97,7 +96,7 @@ img{
   justify-content: 'flex-end';
   align-self:flex-end;
   vertical-align: middle;
-}
+  }
 
 .input_panel {
   display: flex;
@@ -123,4 +122,8 @@ img{
     border-radius:50px;
     text-align:center;
     box-shadow: 2px 2px 3px #999;  
+}
+
+nav {
+    background-color: rgb(97, 64, 128);
 }
