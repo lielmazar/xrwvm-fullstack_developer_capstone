@@ -1,0 +1,156 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+</head>
+<div>
+  <nav class="navbar navbar-expand-lg navbar-light" style="height: 1in;">
+    <div class="container-fluid">
+      <h2 style="padding-right: 5%; color: white">Premier Auto Group</h2>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: larger; color: white" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="font-size: larger; color: white" href="/about">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" style="font-size: larger; color: white; text-decoration: underline" href="/contact">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+    
+  <div class="card" style="width: 80%; margin: auto; margin-top: 5%;">
+    <div class="banner">
+      <h1 style="margin-top: 20px; color: rgb(97, 64, 128)">Contact Us</h1>
+      <p style="margin: 2%; text-align: center;">Get in touch with Premier Auto Group. We're here to help you find your perfect vehicle or answer any questions you may have.</p>
+    </div>
+    
+    <div style="display: flex; flex-direction: row; margin: auto; width: 100%;">
+      <!-- Contact Form -->
+      <div class="card" style="width: 50%; margin-right: 2%;">
+        <div class="title">Send Us a Message</div>
+        <form id="contactForm" onsubmit="submitForm(event)" style="padding: 20px;">
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: rgb(97, 64, 128); font-weight: bold;">Name *</label>
+            <input type="text" required style="width: 100%; padding: 8px; border: 2px solid rgb(103, 102, 105); border-radius: 4px;">
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: rgb(97, 64, 128); font-weight: bold;">Email *</label>
+            <input type="email" required style="width: 100%; padding: 8px; border: 2px solid rgb(103, 102, 105); border-radius: 4px;">
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: rgb(97, 64, 128); font-weight: bold;">Phone</label>
+            <input type="tel" style="width: 100%; padding: 8px; border: 2px solid rgb(103, 102, 105); border-radius: 4px;">
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: rgb(97, 64, 128); font-weight: bold;">Subject</label>
+            <select style="width: 100%; padding: 8px; border: 2px solid rgb(103, 102, 105); border-radius: 4px;">
+              <option value="general">General Inquiry</option>
+              <option value="sales">Vehicle Sales</option>
+              <option value="service">Service Department</option>
+              <option value="financing">Financing Options</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 5px; color: rgb(97, 64, 128); font-weight: bold;">Message *</label>
+            <textarea required rows="5" style="width: 100%; padding: 8px; border: 2px solid rgb(103, 102, 105); border-radius: 4px; resize: vertical;" placeholder="Tell us how we can help you..."></textarea>
+          </div>
+          
+          <button type="submit" style="background-color: rgb(97, 64, 128); color: white; padding: 12px 30px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; width: 100%;">
+            Send Message
+          </button>
+        </form>
+      </div>
+      
+      <!-- Contact Information -->
+      <div class="card" style="width: 45%; margin-left: 2%;">
+        <div class="title">Visit Our Location</div>
+        <div class="details">
+          <h4 style="color: rgb(97, 64, 128); margin-bottom: 15px;">Premier Auto Group</h4>
+          
+          <div style="margin-bottom: 20px;">
+            <strong>📍 Address:</strong><br>
+            1234 Auto Plaza Drive<br>
+            Phoenix, AZ 85001
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <strong>📞 Phone:</strong><br>
+            <a href="tel:602-555-0123" style="color: rgb(97, 64, 128); text-decoration: none;">(602) 555-0123</a>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <strong>✉️ Email:</strong><br>
+            <a href="mailto:info@premierautogroup.com" style="color: rgb(97, 64, 128); text-decoration: none;">info@premierautogroup.com</a>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <strong>🕒 Business Hours:</strong><br>
+            Monday - Friday: 9:00 AM - 8:00 PM<br>
+            Saturday: 9:00 AM - 6:00 PM<br>
+            Sunday: 12:00 PM - 5:00 PM
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <strong>🔧 Service Department:</strong><br>
+            Monday - Friday: 7:30 AM - 6:00 PM<br>
+            Saturday: 8:00 AM - 4:00 PM<br>
+            Sunday: Closed
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Staff Contact Cards -->
+    <div style="margin-top: 30px;">
+      <h3 style="text-align: center; color: rgb(97, 64, 128); margin-bottom: 20px;">Direct Contact with Our Team</h3>
+      <div style="display: flex; flex-direction: row; justify-content: space-around; margin: 20px;">
+        
+        <div class="card" style="width: 30%; text-align: center;">
+          <div class="title">Michael Rodriguez</div>
+          <div class="details">
+            <p><strong>General Manager</strong></p>
+            <p>📞 <a href="tel:602-555-0124" style="color: rgb(97, 64, 128); text-decoration: none;">(602) 555-0124</a></p>
+            <p>✉️ <a href="mailto:mrodriguez@premierautogroup.com" style="color: rgb(97, 64, 128); text-decoration: none;">mrodriguez@premierautogroup.com</a></p>
+            <p style="font-size: 14px;">Contact Michael for general inquiries, vehicle purchases, and customer service matters.</p>
+          </div>
+        </div>
+        
+        <div class="card" style="width: 30%; text-align: center;">
+          <div class="title">Sarah Chen</div>
+          <div class="details">
+            <p><strong>Finance Director</strong></p>
+            <p>📞 <a href="tel:602-555-0125" style="color: rgb(97, 64, 128); text-decoration: none;">(602) 555-0125</a></p>
+            <p>✉️ <a href="mailto:schen@premierautogroup.com" style="color: rgb(97, 64, 128); text-decoration: none;">schen@premierautogroup.com</a></p>
+            <p style="font-size: 14px;">Reach out to Sarah for financing options, loan applications, and payment plans.</p>
+          </div>
+        </div>
+        
+        <div class="card" style="width: 30%; text-align: center;">
+          <div class="title">David Thompson</div>
+          <div class="details">
+            <p><strong>Service Manager</strong></p>
+            <p>📞 <a href="tel:602-555-0126" style="color: rgb(97, 64, 128); text-decoration: none;">(602) 555-0126</a></p>
+            <p>✉️ <a href="mailto:dthompson@premierautogroup.com" style="color: rgb(97, 64, 128); text-decoration: none;">dthompson@premierautogroup.com</a></p>
+            <p style="font-size: 14px;">Contact David for service appointments, maintenance questions, and vehicle inspections.</p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+</html>
