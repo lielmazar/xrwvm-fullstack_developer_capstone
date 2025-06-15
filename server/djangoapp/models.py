@@ -6,14 +6,14 @@ class CarMake(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     # - Any other fields you would like to include in car make model
-    
+
     def __str__(self):
         return "Name: " + self.name + "Description: " + self.description
 
 
 class CarModel(models.Model):
     # Many-to-One relationship
-    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE) 
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     CAR_TYPES = [
         ('SEDAN', 'Sedan'),
