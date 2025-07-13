@@ -30,13 +30,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    'https://lielmazar-8000.theiadockernext-1-labs' +
-    '-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/'
+    'cafe.cservices.co.il'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://lielmazar-8000.theiadockernext-1-labs' +
-    '-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/'
+    'localhost',
+    'https://cafe.cservices.co.il'
 ]
 
 REST_FRAMEWORK = {
