@@ -1,25 +1,41 @@
-    FROM python:3.12.0-slim-bookworm
+###############################################################################
+# ---------- 1.  Build React front-end ----------------------------------------
+###############################################################################
+FROM node:20-bookworm AS frontend-build
 
-    ENV PYTHONBUFFERED 1
-    ENV PYTHONWRITEBYTECODE 1
+# Public URL determines how CRA writes asset links.
+# "."  → relative links   |  "/ibm-fullstack-capstone" → prefixed links
+ARG PUBLIC_URL=.
+ENV PUBLIC_URL=${PUBLIC_URL}
 
-    ENV APP=/app
+WORKDIR /app/frontend
+# Install deps first so Docker layer is cached
+COPY frontend/package*.json ./
+RUN npm ci
 
-    # Change the workdir.
-    WORKDIR $APP
+# copy the rest of the React source and build it
+COPY frontend/ ./
+RUN npm run build          # outputs to /app/frontend/build
 
-    # Install the requirements
-    COPY requirements.txt $APP
+###############################################################################
+# ---------- 2.  Build runtime Django image -----------------------------------
+###############################################################################
+FROM python:3.12-slim-bookworm AS runtime
 
-    RUN pip3 install -r requirements.txt
+ENV PYTHONBUFFERED=1 PYTHONWRITEBYTECODE=1
+WORKDIR /app
 
-    # Copy the rest of the files
-    COPY . $APP
 
-    EXPOSE 8000
+# ----- Python dependencies ---------------------------------------------------
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-    RUN chmod +x /app/entrypoint.sh
+# ----- Project source --------------------------------------------------------
+COPY . .
 
-    ENTRYPOINT ["/bin/bash","/app/entrypoint.sh"]
+# ----- Runtime metadata ------------------------------------------------------
+EXPOSE 8000
+RUN chmod +x /app/entrypoint.sh
 
-    CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "djangoproj.wsgi"]
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "djangoproj.wsgi"]

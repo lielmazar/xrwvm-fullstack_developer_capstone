@@ -1,29 +1,169 @@
+# 1. A StorageClass for static local PVs (no dynamic provisioner)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-mongo
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+# 2. A 200 Mi PersistentVolume that maps to a host‑path on **one** node
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 200Mi
+  volumeMode: Filesystem
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-mongo
+  persistentVolumeReclaimPolicy: Retain   # keeps data if PVC is deleted
+  local:
+    path: /var/lib/mongo-data             # create & chmod 0700 on the node
+  nodeAffinity:                           # pin PV to a specific node
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: ["dubuntu2204"]         # <— replace with your node name
+---
+# 3. The PVC the pod will actually claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-mongo
+  resources:
+    requests:
+      storage: 200Mi
+---
+# 4. A simple ClusterIP Service for in‑cluster access
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: mongo
+---
+# 5. Single‑replica Deployment that mounts the PVC
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    run: dealership
-  name: dealership
+  name: mongo
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      run: dealership
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
+    matchLabels: { app: mongo }
   template:
     metadata:
-      labels:
-        run: dealership
+      labels: { app: mongo }
     spec:
       containers:
-      - image: us.icr.io/sn-labs-lielmazar/dealership:latest
-        imagePullPolicy: Always
-        name: dealership
+      - name: mongo
+        image: mongo:7.0
+        ports: [{ containerPort: 27017 }]
+        volumeMounts:
+        - name: mongo-data
+          mountPath: /data/db
+      volumes:
+      - name: mongo-data
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: car-api }
+  template:
+    metadata:
+      labels: { app: car-api }
+    spec:
+      containers:
+      - name: api
+        image: lielmazar/cservices-main:dealership-ibm-capston-13-7-25
+        ports: [{ containerPort: 3030 }]
+        env:
+        - name: MONGO_URL
+          value: mongodb://mongo:27017/dealershipsDB
+        # simple readiness / liveness checks
+        readinessProbe:
+          httpGet: { path: /, port: 3030 }
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet: { path: /, port: 3030 }
+          initialDelaySeconds: 20
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-api
+spec:
+  type: ClusterIP          # NodePort / LoadBalancer if you need external access
+  selector: { app: car-api }
+  ports:
+  - port: 80
+    targetPort: 3030
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: django }
+  template:
+    metadata:
+      labels: { app: django }
+    spec:
+      containers:
+      - name: web
+        image: lielmazar/cservices-main:ibm-capstone-django-13-07-25v9
+        env:
+        - name: CAR_API_URL                           # Node‑API lives only in‑cluster
+          value: http://car-api.default.svc.cluster.local
         ports:
         - containerPort: 8000
-          protocol: TCP
-      restartPolicy: Always
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django
+spec:
+  selector: { app: django }
+  ports:
+  - port: 80               # the port your HTTPRoute will hit
+    targetPort: 8000
+    protocol: TCP
+    name: http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: icm-fullstack-capstone
+spec:
+  parentRefs:
+  - name: gateway
+    sectionName: https
+  hostnames: ["cafe.cservices.co.il"]
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: django
+      port: 80
