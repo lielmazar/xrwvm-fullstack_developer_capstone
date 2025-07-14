@@ -29,12 +29,10 @@ SECRET_KEY =\
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost',
     'cafe.cservices.co.il'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'localhost',
     'https://cafe.cservices.co.il'
 ]
 

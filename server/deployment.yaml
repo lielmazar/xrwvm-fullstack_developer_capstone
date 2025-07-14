@@ -121,7 +121,7 @@ kind: Deployment
 metadata:
   name: django
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels: { app: django }
   template:
