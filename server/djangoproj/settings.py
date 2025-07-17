@@ -29,11 +29,11 @@ SECRET_KEY =\
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'cafe.cservices.co.il'
+    'ibmfs.cservices.co.il'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://cafe.cservices.co.il'
+    'https://ibmfs.cservices.co.il'
 ]
 
 REST_FRAMEWORK = {

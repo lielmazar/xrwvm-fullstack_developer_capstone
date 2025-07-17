@@ -2,7 +2,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: local-mongo
+  name: ibmfs-local-mongo
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ---
@@ -10,16 +10,16 @@ volumeBindingMode: WaitForFirstConsumer
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mongo-pv
+  name: ibmfs-mongo-pv
 spec:
   capacity:
     storage: 200Mi
   volumeMode: Filesystem
   accessModes: [ReadWriteOnce]
-  storageClassName: local-mongo
+  storageClassName: ibmfs-local-mongo
   persistentVolumeReclaimPolicy: Retain   # keeps data if PVC is deleted
   local:
-    path: /var/lib/mongo-data             # create & chmod 0700 on the node
+    path: /var/lib/ibmfs-mongo-data             # create & chmod 0700 on the node
   nodeAffinity:                           # pin PV to a specific node
     required:
       nodeSelectorTerms:
@@ -32,10 +32,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongo-pvc
+  name: ibmfs-mongo-pvc
 spec:
   accessModes: [ReadWriteOnce]
-  storageClassName: local-mongo
+  storageClassName: ibmfs-local-mongo
   resources:
     requests:
       storage: 200Mi
@@ -44,50 +44,50 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: ibmfs-mongo
 spec:
   ports:
   - port: 27017
     targetPort: 27017
   selector:
-    app: mongo
+    app: ibmfs-mongo
 ---
 # 5. Single‑replica Deployment that mounts the PVC
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: ibmfs-mongo
 spec:
   replicas: 1
   selector:
-    matchLabels: { app: mongo }
+    matchLabels: { app: ibmfs-mongo }
   template:
     metadata:
-      labels: { app: mongo }
+      labels: { app: ibmfs-mongo }
     spec:
       containers:
-      - name: mongo
+      - name: ibmfs-mongo
         image: mongo:7.0
         ports: [{ containerPort: 27017 }]
         volumeMounts:
         - name: mongo-data
           mountPath: /data/db
       volumes:
-      - name: mongo-data
+      - name: ibmfs-mongo-data
         persistentVolumeClaim:
-          claimName: mongo-pvc
+          claimName: ibmfs-mongo-pvc
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: car-api
+  name: ibmfs-car-api
 spec:
   replicas: 1
   selector:
-    matchLabels: { app: car-api }
+    matchLabels: { app: ibmfs-car-api }
   template:
     metadata:
-      labels: { app: car-api }
+      labels: { app: ibmfs-car-api }
     spec:
       containers:
       - name: api
@@ -95,7 +95,7 @@ spec:
         ports: [{ containerPort: 3030 }]
         env:
         - name: MONGO_URL
-          value: mongodb://mongo:27017/dealershipsDB
+          value: mongodb://ibmfs-mongo:27017/dealershipsDB
         # simple readiness / liveness checks
         readinessProbe:
           httpGet: { path: /, port: 3030 }
@@ -108,10 +108,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: car-api
+  name: ibmfs-car-api
 spec:
   type: ClusterIP          # NodePort / LoadBalancer if you need external access
-  selector: { app: car-api }
+  selector: { app: ibmfs-car-api }
   ports:
   - port: 80
     targetPort: 3030
@@ -119,21 +119,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: django
+  name: ibmfs-django
 spec:
   replicas: 1
   selector:
-    matchLabels: { app: django }
+    matchLabels: { app: ibmfs-django }
   template:
     metadata:
-      labels: { app: django }
+      labels: { app: ibmfs-django }
     spec:
       containers:
       - name: web
         image: lielmazar/cservices-main:ibm-capstone-django-14-07-25v7
         env:
         - name: CAR_API_URL                           # Node‑API lives only in‑cluster
-          value: http://car-api.default.svc.cluster.local
+          value: http://ibmfs-car-api.default.svc.cluster.local
         ports:
         - containerPort: 8000
           name: http
@@ -141,9 +141,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: django
+  name: ibmfs-django
 spec:
-  selector: { app: django }
+  selector: { app: ibmfs-django }
   ports:
   - port: 80               # the port your HTTPRoute will hit
     targetPort: 8000
@@ -151,19 +151,40 @@ spec:
     name: http
 ---
 apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ibmfs
+  namespace: default
+  annotations: {cert-manager.io/cluster-issuer: letsencrypt-prod}
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    port: 80
+    protocol: HTTP
+  - name: https
+    hostname: "ibmfs.cservices.co.il"
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - {kind: Secret, name: ibmfs-lets}
+---
+apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: icm-fullstack-capstone
+  name: ibmfs
 spec:
   parentRefs:
-  - name: gateway
+  - name: ibmfs
     sectionName: https
-  hostnames: ["cafe.cservices.co.il"]
+  hostnames: ["ibmfs.cservices.co.il"]
   rules:
   - matches:
     - path:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: django
+    - name: ibmfs-django
       port: 80
