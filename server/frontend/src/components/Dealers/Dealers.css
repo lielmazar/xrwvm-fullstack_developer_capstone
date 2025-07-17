@@ -1,88 +1,101 @@
-table{
-    margin:5px;
-    padding:10px;
-    border: grey solid 1px;
-    width:100%
-  }
-  
-  td{
-    padding:10px;
-    align-self: center;
-    border:solid grey .5px;
-    text-align: center;
-    font-size: large;
-  }
-  
-  .review_panel{
-    display: flex;
-    flex-direction: column;
-    border: solid grey;
-    position: relative;
-    height:7cm;
-    width:6cm;
-    overflow-y: scroll;
-    padding:.3cm;
-    padding-top: 0%;
-    border-radius:10px; 
-    box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5);
-    margin-bottom: .5cm;
-    justify-content: space-between;
-  }
-
-  .postreview{
-    margin:20px;
-    padding:10px;
-    font-size: larger;
-  }
-
-  th{
-    padding:5px;
-    align-self: center;
-    text-align: center;
-    font-size: large;
-    margin-bottom: 1cm;
-    vertical-align: middle;
-    color: black;
-  }
-
-  .reviews_panel {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 1cm;
-    overflow-wrap: normal;
-    margin-top: 1cm;
-    align-items: flex-start;
-  }
-
-  .reviewer {
-    margin: 10px; /* Optional margin for spacing */
-    font-style: italic;
-    color: gray;
-    font-size: small;
+table {
+  margin: 24px auto;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  width: 95%;
+  background: var(--color-surface);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(42, 82, 152, 0.07);
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.review {
-  margin-top: 1.5cm;
+th, td {
+  padding: 14px 10px;
+  text-align: center;
+  font-size: 1.05rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.emotion_icon {
-  align-self: center;
-  position:fixed;
-    width:40px;
-    height:40px;
-    background-color:#0C9;
-    color:#FFF;
-    border-radius:50px;
-    text-align:center;
-    box-shadow: 2px 2px 3px #999;  
+th {
+  color: var(--color-primary);
+  background: var(--color-table-row-alt);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+tr:nth-child(even) {
+  background: var(--color-table-row-alt);
+}
+
+tr:hover {
+  background: #e8f0fe;
+  transition: background 0.2s;
 }
 
 .review_icon {
-  width:40px;
+  width: 36px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(42, 82, 152, 0.10);
+  background: var(--color-accent);
+  padding: 4px;
+}
+.review_icon:hover {
+  transform: scale(1.13);
+  box-shadow: 0 2px 8px rgba(42, 82, 152, 0.18);
+  border: 2px solid var(--color-primary);
 }
 
-.review_icon:hover {
-  transform: scale(1.1);
-  border: solid lightgray;
+select {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 1rem;
+}
+
+.dealer-detail-container {
+  margin: 32px auto;
+  max-width: 900px;
+  background: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(42, 82, 152, 0.09);
+  padding: 24px 32px 32px 32px;
+}
+
+.dealer-header {
+  margin-top: 10px;
+  margin-bottom: 18px;
+}
+
+.dealer-title {
+  color: var(--color-primary);
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dealer-subtitle {
+  color: var(--color-muted);
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 0.5em;
+}
+
+.loading-reviews {
+  color: var(--color-muted);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.no-reviews {
+  color: var(--color-accent);
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin: 18px 0;
 }

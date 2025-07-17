@@ -29,11 +29,13 @@ SECRET_KEY =\
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'ibmfs.cservices.co.il'
+    'ibmfs.cservices.co.il',
+    '127.0.0.1'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://ibmfs.cservices.co.il'
+    'https://ibmfs.cservices.co.il',
+    'http://127.0.0.1:8001'
 ]
 
 REST_FRAMEWORK = {
