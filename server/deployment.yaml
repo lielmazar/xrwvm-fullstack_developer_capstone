@@ -130,7 +130,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: lielmazar/cservices-main:ibm-capstone-django-14-07-25v7
+        image: lielmazar/cservices-main:ibm-capstone-django-17-07-25v1
         env:
         - name: CAR_API_URL                           # Node‑API lives only in‑cluster
           value: http://ibmfs-car-api.default.svc.cluster.local
